@@ -1,0 +1,75 @@
+
+<html>
+<header>
+<title></title>
+	<!--<script type="text/javascript" src="jquery-2.0.0.min.js"></script>-->
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jquery.indexeddb.min.js"></script>
+	<script type="text/javascript" src="painter.js"></script>
+	<script type="text/javascript" >
+		$(document).ready(function(){
+			var painter = new Painter(640,480,$("#myCanvas"),$("#fileName"),$("#downloadAncer"),$("#dropImage"),$("#clearAncer"));
+		});
+	</script>
+</header>
+
+<body>
+	<div id="wrapper">
+		<article>
+			<h1>Canvas</h1>
+			<div style="border:solid gray 1px" id="dropImage"  ondragover="onDragOver(event)" ondrop="onDragOver(event)" >
+			<canvas id="myCanvas" >
+				HTML5　Canvasに対応したブラウザーを使用してください。
+			</canvas>
+			<br>
+			ファイル名<input type="text" id="fileName" >
+			<a id="clearAncer" href="" target="_blank">クリア</a>
+			<a id="downloadAncer" href="" target="_blank">保存</a>
+			</div>
+		</article>
+		<footer>
+
+		</footer>
+	</div>
+	<script type="text/javascript">
+		  // File API実装チェック
+		  if (window.File) {
+			// File APIが実装されている場合には、dropイベントを登録
+			//document.getElementById("dropImage").addEventListener("drop", onDragOver, false);
+		  } else {
+				window.alert("本ブラウザではFile APIが使えません");
+		  }
+		  
+		  function onDragOver(event) {
+				event.preventDefault();
+		  }
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

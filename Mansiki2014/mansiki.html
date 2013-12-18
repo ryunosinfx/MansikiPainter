@@ -1,0 +1,236 @@
+<html>
+<header>
+<title>Mansiki TweetStyle ver.0.0.1</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<link rel="stylesheet" type="text/css" href="TweetStyle/css/mansikiETSIcons.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="TweetStyle/css/mansikiEditTweetStyle.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="./css/bootstrap-theme.min.css">
+		<link rel="stylesheet" type="text/css" href="./css/jquery.minicolors.css">
+	<script src="js/jquery.js" type="text/javascript"></script>
+	<script src="js/bonsai-0.4.1.min.js" type="text/javascript"></script>
+	<script src="js/jquery.indexeddb.min.js" type="text/javascript"></script>
+	<script src="js/indexdbWrapper.js" type="text/javascript"></script>
+	<script src="js/TweetStyle/mansikiETSConsts.js" type="text/javascript"></script>
+	<script src="js/TweetStyle/mansikiETSUtil.js" type="text/javascript"></script>
+	<script src="js/TweetStyle/mansikiETSKeyBinder.js" type="text/javascript"></script>
+	<script src="js/TweetStyle/mansikiETSFuncs.js" type="text/javascript"></script>
+	<script src="js/TweetStyle/mansikiETSAnalizer.js" type="text/javascript"></script>
+	<!-- 
+	<script src="TweetStyle/js/mansikiETSIndexedDBWrapper.js" type="text/javascript"></script>
+	<script src="TweetStyle/js/mansikiETSInitData.js" type="text/javascript"></script> 
+	-->
+	<script src="js/TweetStyle/mansikiEditTweetStyle.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var mtse = new MansikiTweetStyleEditor();
+			mtse.init();
+		});
+		
+	</script>
+
+</header>
+
+<body>
+	<form>
+			<div id="TWshadowBack" class="shadowBack">
+			</div>
+		<div class="conteiner">
+			<div class="header">
+				<div class="menu">
+				</div>
+			</div>
+			<div class="TMconteiner">
+				<div class="TMtitle">
+					<div class="TMtitleText">タイトル：<input type="text" id="TMtitleTextInput" ></div>
+					<div class="TMtitleCommands">
+						<a id="TMsaveButton">保存</a>
+						<a id="TMloadButton">開く</a>
+						<input id="TMloadButtonFile" type="file" />
+					</div>
+					<div class="tabsHead">
+						<div class="otherTab">
+							テキスト
+						</div>
+						<div class="currentTab">
+							ツイートモード:コンテ
+						</div>
+						<div class="otherTab">
+							漫画
+						</div>
+						<div class="otherTab" id="LSclear">
+							LS消去
+						</div>
+					</div>
+				</div>
+				<div class="tweetBody">
+					<div class="tweetTab">
+						<div class="tweetSideArea">
+							<div class="tweetSide">
+								<div class="status">
+									<div class="TWTitleState" id="TWTitleStateA">
+										頁送り<br/>
+										<label><input type="radio" id="TWPageDiarectL" value="left" name="TWPageDiarect" checked="checked"/>左</label>
+										<br />
+										<label><input type="radio" id="TWPageDiarectR"  value="" name="TWPageDiarect" />右</label>
+									</div>
+									<div class="TWTitleState" id="TWTitleStateB">
+										頁始まり<br/>
+										<label><input type="radio" id="TWPageStartL"  value="" name="TWPageStart" checked="checked" />左</label>
+										<br />
+										<label><input type="radio" id="TWPageStartR"  value="" name="TWPageStart" />右</label>
+									</div>
+									<div class="TWTitleState" id="TWTitleStateC">
+										文字行送り<br/>
+										<label><input type="radio" id="TWRowDiarectL"  value="" name="TWRowDiarect" checked="checked" />左</label>
+										<br />
+										<label><input type="radio" id="TWRowDiarectR"  value="" name="TWRowDiarect" />右</label>
+									</div>
+									<div class="TWTitleState" id="TWTitleStateD">
+										縦横書き<br/>
+										<label><input type="radio" id="TWLetterDiarectV"  value="" name="TWLetterDiarect" checked="checked" />縦</label>
+										<br />
+										<label><input type="radio" id="TWLetterDiarectH"  value="" name="TWLetterDiarect" />横</label>
+									</div>
+									<div class="pages" id="TWTitleStateTotal">
+										X頁
+									</div>
+								</div>
+								<div class="TWtweetBoxParent" id="TWtweetBoxParent">
+									<div class="commands" id="TWcmdAreaUpper">
+										<div class="MansikiCmdIcon" id="addPageIcon">
+											<div class="TWFuncIcon icon"><div class="page"></div><div class="pageLines"></div></div>
+											<div class="TWFuncChar">頁</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addKomaIcon">
+											<div class="TWFuncIcon icon"><div class="koma"></div><div class="komaLines"></div></div>
+											<div class="TWFuncChar">駒</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addFukidashiIcon">
+											<div class="TWFuncIcon icon"><div class="chat"></div><div class="lines"></div></div>
+											<div class="TWFuncChar">噴</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addSettingIcon">
+											<div class="TWFuncIcon icon"><div class="pencil"></div></div>
+											<div class="TWFuncChar">設</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addActorIcon">
+											<div class="TWFuncIcon icon"><div class="user"></div><div class="shoulder"></div></div>
+											<div class="TWFuncChar">者</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addObjectIcon">
+											<div class="TWFuncIcon icon"><div class="bomb"></div></div>
+											<div class="TWFuncChar">物</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addBackgroundIcon">
+											<div class="TWFuncIcon icon"><div class="cloudUp"></div><div class="cloudUpArrow"></div></div>
+											<div class="TWFuncChar">背</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addSoundIcon">
+											<div class="TWFuncIcon icon"><div class="speakerVolH"></div></div>
+											<div class="TWFuncChar">音</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addEffectIcon">
+											<div class="TWFuncIcon icon"><div class="target"></div></div>
+											<div class="TWFuncChar">効</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addNalationIcon">
+											<div class="TWFuncIcon icon"><div class="mic"></div><div class="holder"></div></div>
+											<div class="TWFuncChar">説</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addQuoteIcon">
+											<div class="TWFuncIcon icon"><div class="ribbon"></div></div>
+											<div class="TWFuncChar">注</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addSeanIcon">
+											<div class="TWFuncIcon icon"><div class="location"></div></div>
+											<div class="TWFuncChar">場</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+										<div class="MansikiCmdIcon" id="addFukusenIcon">
+											<div class="TWFuncIcon icon"><div class="key_base"></div><div class="key_squares"></div></div>
+											<div class="TWFuncChar">伏</div>
+											<div class="TWFuncName"></div>
+											<div class="TWFuncCommand"></div>
+										</div>
+									</div>
+									<div class="inputArea" id="TWcmdAreaUnder">
+										<div id="TMinputPropForms"></div>
+										<div id="TMinputPropArea"><input type="text"  id="TMinputProp"/></div>
+											<textarea id="TWtweetHideTextarea" style="width:0px;height:0px;margin:-10px 0 10px 0;padding:0px;z-index:0;position:fixed;top:0;left:0;"></textarea >
+										<div id="TMinputArea">
+											<textarea class="input" id="TMtweetTextarea"></textarea>
+										</div>
+										<div class="TMinputInfo">
+											<span id="TMTweetMode"></span>
+											<span id="TMTweetType"></span>
+											<span id="TMCursor"></span>
+											<span id="TMTweetCount">文字</span>
+											<textarea id="TMtweetInput" style="display:none"></textarea >
+										</div>
+									</div>
+									<div class="deside">
+										<div id="TWcmdButtonUp" class="TWDesideIcon icon"><div class="ArroePrev"></div></div>
+										<div class="commandWindows">
+											cmd<input type="text" id="mansikiCmd"/>
+										</div>
+										<div class="buttons">
+											<div class="tweet" id="TMclear">クリア</div>
+											<div class="tweet" id="TMadd">追加</div>
+											<div class="tweet" id="TMreset">リセット</div>
+										</div>
+										<div id="TWcmdButtonDown" class="TWDesideIcon icon"><div class="ArroeNext"></div></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tweetList" id="TMtweetList">
+						</div>
+						<div class="tweetInfo" id="TMtweetInfo">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="svgAreaArrow"  >
+				<svg xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink" 
+					style="width:20px;height:50px;">
+					  
+					<path
+					   style="fill:#ff0000;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.1"
+					   id="cursorA"
+					   d="m 1,0 -0,50 15,-25 z"
+					    />
+				</svg>
+			</div>
+			
+			<div class="footer">
+				<span>Powerd By Mansiki</span>
+			</div>
+			<div class="TwcommandList" id="TWcommandList"></div>
+		</div>
+	</form>
+</body>
+</html>
