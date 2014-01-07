@@ -1,43 +1,111 @@
-
-<html>
-<header>
-<title></title>
-	<!--<script type="text/javascript" src="jquery-2.0.0.min.js"></script>-->
-	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript" src="jquery.indexeddb.min.js"></script>
-	<script type="text/javascript" src="painter.js"></script>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css">
+	<link href="./css/bootstrap-glyphicons.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="./css/bootstrap-theme.min.css" type="text/css">
+	<link rel="stylesheet" href="./css/jquery.minicolors.css" type="text/css">
+	<link rel="stylesheet" href="./css/mansikiPaint.css" type="text/css">
+	<script src="./js/libs/require.js"></script>
+	<script src="./js/mansikiPainter.js"></script>
 	<script type="text/javascript" >
-		$(document).ready(function(){
-			var painter = new Painter(640,480,$("#myCanvas"),$("#fileName"),$("#downloadAncer"),$("#dropImage"),$("#clearAncer"));
-		});
 	</script>
-</header>
+	<title></title>
+</head>
 
 <body>
 	<div id="wrapper">
+	<nav class="navbar navbar-default navbar-fixed-top " role="navigation">
+				
+				
+  <div class="navbar-header">
+    <h5 style="line-height:13px">Mansiki<br>Painter</h5>
+  </div>
+	 	<form class="navbar-form navbar-left" role="search">
+      <div class="form-group">
+				<input type="" class="form-control" id="colorSetting" value="#ccc"></input>
+      </div>
+    </form>
+				  
+	    <ul class="nav navbar-nav navbar-right">
+	      <li class="dropdown">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pens <b class="caret"></b></a>
+	        <ul class="dropdown-menu">
+				      <li>
+								<a href="#" id="clearAncer">This Page Clear</button>
+				      </li>
+	          <li class="divider"></li>
+				      <li>
+				      	<a href="#" id="pencilAncer">Pencil</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="ereaserAncer">ereaser</a>
+				  		</li>
+	        </ul>
+	      </li>
+	    </ul>
+	    <ul class="nav navbar-nav navbar-right">
+	      <li class="dropdown">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu<b class="caret"></b></a>
+	        <ul class="dropdown-menu">
+				      <li>
+				      	file:<input type="text" id="fileName" >
+				      	<a href="#" id="downloadAncer">download</a>
+				      </li>
+				      <li>
+				      	<a href="#" id="editTitleAncer">edit Title</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="newTitleAncer">new Title</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="titleListAncer"  data-toggle="modal" data-target="#myModal">TitleList</a>
+				  		</li>
+	        </ul>
+	      </li>
+	    </ul>
+	    <ul class="nav navbar-nav navbar-right">
+	      <li class="dropdown" id="canvasSize">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Size<b class="caret"></b></a>
+	        <ul class="dropdown-menu">
+	        </ul>
+	      </li>
+	    </ul>
+	  <div class="modal fade" id="myModal">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">Modal title</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>One fine body&hellip;</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary">Save changes</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	  
+	</nav>
 		<article>
-			<h1>Canvas</h1>
-			<div style="border:solid gray 1px" id="dropImage"  ondragover="onDragOver(event)" ondrop="onDragOver(event)" >
-			<canvas id="myCanvas" >
-				HTML5　Canvasに対応したブラウザーを使用してください。
-			</canvas>
-			<br>
-			ファイル名<input type="text" id="fileName" >
-			<a id="clearAncer" href="" target="_blank">クリア</a>
-			<a id="downloadAncer" href="" target="_blank">保存</a>
+			<div style="border:solid gray 1px" class="mansikiImageField" id="dropImage"  ondragover="onDragOver(event)" ondrop="onDragOver(event)" >
+				<div id="myCanvas" class="mansikiCanvas"></div>
 			</div>
 		</article>
 		<footer>
-
 		</footer>
 	</div>
 	<script type="text/javascript">
-		  // File API実装チェック
+		  // File API
 		  if (window.File) {
-			// File APIが実装されている場合には、dropイベントを登録
+			// File API
 			//document.getElementById("dropImage").addEventListener("drop", onDragOver, false);
 		  } else {
-				window.alert("本ブラウザではFile APIが使えません");
+				alert("File API is not support with your browser!");
 		  }
 		  
 		  function onDragOver(event) {
