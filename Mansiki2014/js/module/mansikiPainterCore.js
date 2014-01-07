@@ -8,7 +8,7 @@ define([
         'js/module/mansikiPainterCanvas',
         'js/module/mansikiPainterForm',
         'js/module/paintDataManager',
-        'js/module/painterStateManager',
+        'js/module/paintStateManager',
         'js/config/mansikiPainterConfig',
         'js/config/mansikiPainterInitData',
         ], function ($, _, ko,mc,idb,idbw,mpc,mpf,pdm,psm,mpConf,mpInitData

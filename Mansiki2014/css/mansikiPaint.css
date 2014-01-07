@@ -1,0 +1,26 @@
+body {
+    padding-top: 70px;
+}
+div.mansikiImageField {
+    margin-top: -18px;
+}
+div.mansikiCanvas {
+    border: 0 solid #000000;
+    margin: 0;
+    padding: 0;
+}
+.btn-group {
+    margin-left: -4px;
+}
+.input-group input {
+    margin-top: 0;
+}
+span.minicolors-swatch {
+}
+.minicolors {
+    margin-bottom: 0;
+}
+div.minicolors input.minicolors-input {
+    height: 34px;
+    padding-left: 26px;
+}
