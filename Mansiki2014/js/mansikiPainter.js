@@ -55,6 +55,5 @@ require([
   'indexeddb',
   'indexdbWrapper'
 ], function (App) {
-    alert("aaaa");
   App.initialize();
 });

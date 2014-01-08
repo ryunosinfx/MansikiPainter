@@ -68,7 +68,7 @@ define([
                     self.pdm.loadAnyData(self.brushKey,callback2);
                     $.when(d1, d2).done(
                 	function(){
-                	    alert("zzz:"+self.getCurrentBrush()+"/"+self.currentBrush);
+                	    //alert("zzz:"+self.getCurrentBrush()+"/"+self.currentBrush);
                 	    self.mpc.currentBrush = self.getCurrentBrush();
             		    d.resolve();
                 	}

@@ -16,63 +16,173 @@
 
 <body>
 	<div id="wrapper">
-	<nav class="navbar navbar-default navbar-fixed-top " role="navigation">
+	<nav class="navbar navbar-default navbar-fixed-top top-menu" role="navigation">
 				
-				
-  <div class="navbar-header">
-    <h5 style="line-height:13px">Mansiki<br>Painter</h5>
-  </div>
-	 	<form class="navbar-form navbar-left" role="search">
-      <div class="form-group">
-				<input type="" class="form-control" id="colorSetting" value="#ccc"></input>
-      </div>
-    </form>
+    <ul class="nav navbar-nav">
+			<li class="prev"><a href="#"><strong>Prev</strong></a></li>
+		</ul>
+
+	  <div class="navbar-header active">
+	    <h5 style="line-height:13px">Mansiki<br>Painter</h5>
+	  </div>
+    <ul class="nav navbar-nav">
+	    <li class="dropdown">
+	      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="title">File</span><b class="caret"></b></a>
+	      <ul class="dropdown-menu">
+		      <li>
+		      	file:<input type="text" id="fileName" placeholder="TODOを入力" >
+		      	<a href="#" id="downloadAncer">download</a>
+		      </li>
+		      <li>
+		      	<a href="#" id="downloadAncer">Load</a>
+		      </li>
+         	<li class="divider"></li>
+		      <li>
+		      	<a href="#" id="editTitleAncer"  data-toggle="modal" data-target="#TitleEditor">edit Title</a>
+		  		</li>
+		      <li>
+		      	<a href="#" id="newTitleAncer"  data-toggle="modal" data-target="#TitleEditor">new Title</a>
+		  		</li>
+		      <li>
+		      	<a href="#" id="titleListAncer"  data-toggle="modal" data-target="#myModal">change Title</a>
+		  		</li>
+	      </ul>
+	    </li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="title">View</span><b class="caret"></b></a>
+        <ul class="dropdown-menu">
+		      <li>
+		      	<a href="#" id="paintModeAncer" >PaintMode</a>
+		  		</li>
+		      <li>
+		      	<a href="#" id="mixModeAncer" >MixMode</a>
+		  		</li>
+		      <li>
+		      	<a href="#" id="comaModeAncer">ComaMode</a>
+		  		</li>
+		      <li>
+		      	<a href="#" id="textModeAncer">TextMode</a>
+		  		</li>
+         	<li class="divider"></li>
+        </ul>
+      </li>
+			<li class="List"><a href="#" id="listViewAncer" data-toggle="modal" data-target="#ListView"><strong>List</strong></a></li>
+			<li class="Undo"><a href="#"><strong>Undo</strong></a></li>
+			<li class="Redo"><a href="#"><strong>Redo</strong></a></li>
+		</ul>
 				  
-	    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav">
+	      <li class="dropdown" id="canvasSize">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="title">Size</span><b class="caret"></b></a>
+	        <ul class="dropdown-menu">
+	        </ul>
+	      </li>
 	      <li class="dropdown">
-	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pens <b class="caret"></b></a>
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="title">Pens</span><b class="caret"></b></a>
 	        <ul class="dropdown-menu">
 				      <li>
-								<a href="#" id="clearAncer">This Page Clear</button>
+								<a href="#" id="clearAncer">This Page Clear</a>
 				      </li>
-	          <li class="divider"></li>
+	          	<li class="divider"></li>
 				      <li>
-				      	<a href="#" id="pencilAncer">Pencil</a>
+				      	<a href="#" id="pencilAncer">Pencil<span id="pencilDetailAncer">☆</span></a>
 				  		</li>
 				      <li>
 				      	<a href="#" id="ereaserAncer">ereaser</a>
 				  		</li>
+				      <li>
+				      	<a href="#" id="ereaserAncer">StrateLine</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="ereaserAncer">GridLine</a>
+				  		</li>
+	          	<li class="divider"></li>
+				      <li>
+				      	<form class="navbar-form navbar-left" role="search">
+						      <div class="form-group">
+										<input type="" class="form-control" id="colorSetting" value="#ccc"></input>
+						      </div>
+						    </form>
+				  		</li>
+
 	        </ul>
 	      </li>
-	    </ul>
-	    <ul class="nav navbar-nav navbar-right">
 	      <li class="dropdown">
-	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu<b class="caret"></b></a>
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="title">Pages</span><b class="caret"></b></a>
 	        <ul class="dropdown-menu">
 				      <li>
-				      	file:<input type="text" id="fileName" >
-				      	<a href="#" id="downloadAncer">download</a>
-				      </li>
-				      <li>
-				      	<a href="#" id="editTitleAncer">edit Title</a>
+				      	<a href="#" id="newPageAncer" >new Page</a>
 				  		</li>
 				      <li>
-				      	<a href="#" id="newTitleAncer">new Title</a>
+				      	<a href="#" id="copyPageAncer" >copy Page</a>
 				  		</li>
 				      <li>
-				      	<a href="#" id="titleListAncer"  data-toggle="modal" data-target="#myModal">TitleList</a>
+				      	<a href="#" id="deletePageAncer" >delete Page</a>
+				  		</li>
+	          	<li class="divider"></li>
+				      <li>
+				      	<a href="#" id="movePageToNextAncer" >move Page To Next</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="movePageToEndAncer" >move Page To End</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="movePageToPrevAncer" >move Page To Prev</a>
+				  		</li>
+				      <li>
+				      	<a href="#" id="movePageToFirstAncer" >move Page To First</a>
 				  		</li>
 	        </ul>
 	      </li>
-	    </ul>
-	    <ul class="nav navbar-nav navbar-right">
-	      <li class="dropdown" id="canvasSize">
-	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Size<b class="caret"></b></a>
-	        <ul class="dropdown-menu">
-	        </ul>
-	      </li>
-	    </ul>
-	  <div class="modal fade" id="myModal">
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+     	<li class="next"><a href="#"><strong>Next</strong></a></li>
+    </ul>
+	</nav>
+		<article>
+			<div style="border:solid gray 1px" class="mansikiImageField" id="dropImage"  ondragover="onDragOver(event)" ondrop="onDragOver(event)" >
+				<div id="myCanvas" class="mansikiCanvas"></div>
+			</div>
+		</article>
+		<footer>
+		</footer>
+	</div>
+		<!------------------------------------------------------------------------------------------------------->
+		<div class="modal fade" id="ListView">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">ListView</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>Pages</p>
+		      </div>
+		      <div class="modal-footer">
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		<!------------------------------------------------------------------------------------------------------->
+		<div class="modal fade" id="TitleEditor">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		        <h4 class="modal-title">TitleEditor</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p>One fine body&hellip;</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary">Save changes</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+		<!------------------------------------------------------------------------------------------------------->
+		<div class="modal fade" id="myModal">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -89,16 +199,6 @@
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
 		</div><!-- /.modal -->
-	  
-	</nav>
-		<article>
-			<div style="border:solid gray 1px" class="mansikiImageField" id="dropImage"  ondragover="onDragOver(event)" ondrop="onDragOver(event)" >
-				<div id="myCanvas" class="mansikiCanvas"></div>
-			</div>
-		</article>
-		<footer>
-		</footer>
-	</div>
 	<script type="text/javascript">
 		  // File API
 		  if (window.File) {
@@ -114,30 +214,3 @@
 	</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -24,3 +24,16 @@ div.minicolors input.minicolors-input {
     height: 34px;
     padding-left: 26px;
 }
+
+nav.top-menu ul.nav li a{
+	padding-left:5px;
+	padding-right:5px;
+}
+nav.top-menu form{
+	padding-left:5px;
+	padding-right:5px;
+}
+div.active{
+	color:#7197d1;
+	font-weight:bold;
+}

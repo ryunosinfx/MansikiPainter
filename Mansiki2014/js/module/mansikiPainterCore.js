@@ -6,7 +6,7 @@ define([
         'indexeddb',
         'indexdbWrapper',
         'js/module/mansikiPainterCanvas',
-        'js/module/mansikiPainterForm',
+        'js/module/mansikiPainterForms',
         'js/module/paintDataManager',
         'js/module/paintStateManager',
         'js/config/mansikiPainterConfig',
@@ -73,11 +73,13 @@ define([
 		showSpeed: 100,
 		theme: 'default'
     	};
+    	var self = this;
     	$('#colorSetting').minicolors(settings);
     	psmPromise.done(function(){
-    	    $('#colorSetting').minicolors({'value':psm.getCurrentBrush.color});
-    	    $('#colorSetting').minicolors({
-    	    });
+    	    psm.setPainterCanvas(self.mpcInst);
+    	    var hex = self.mpcInst.currentBrush.color;
+    	    psm.changeColor(hex);
+    	    $('#colorSetting').minicolors({'value':hex});
 	});
     	//alert("aaaa"+$('#colorSetting').val());
     	this.$fileForm.bind("drop",{self:this},this.load);
@@ -120,6 +122,7 @@ define([
     			    }
     			    img.onload=function(event){
     				self.mpcInst.loadToCurrent(img);
+    				mpf.initSizeSelect(self.mpcInst);
     			    }
     			    reader.readAsDataURL(f);
     			}
