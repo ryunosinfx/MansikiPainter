@@ -101,10 +101,10 @@ define([
 		    this.$canvas.attr("height", height);
 		    
 		    
-		    this.$canvas.bind("touchstart",{self:this},this.mouseDown);
-		    this.$canvas.bind("touchend",{self:this},this.mouseUp);
-		    this.$canvas.bind("touchcancel",{self:this},this.mouseOut);
-		    this.$canvas.bind("touchmove",{self:this},this.draw);
+		    this.$canvas.on("touchstart",{self:this,isTouch:true},this.mouseDown);
+		    this.$canvas.on("touchend",{self:this,isTouch:true},this.mouseUp);
+		    this.$canvas.on("touchcancel",{self:this,isTouch:true},this.mouseOut);
+		    this.$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
 		    
 		    
 		    this.$canvas.bind("mousedown",{self:this},this.mouseDown);
@@ -141,17 +141,22 @@ define([
 	    	    clearTimeout( self.mouseOutTimer );
 	    	    self.$canvas.css("cursor","crosshair");
 		    self.initPointer();
-	            self.oldX = event.clientX-self.offsetX + self.scrollOffsetX;
-	            self.oldY = event.clientY-self.offsetY + self.scrollOffsetY;
+	    	    var pageX = isTouch? changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? changedTouches[0].pageY:event.clientY;
+	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
+	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
 	    	    return false;
 	    	},
 	    	mouseDown:function(event){
 	    	    var self = event.data.self;
+	    	    var isTouch = event.data.isTouch;
 		    self.initPointer();
 	    	    self.isMouseDown = true;
 	    	    self.$canvas.css("cursor","crosshair");
-	            self.oldX = event.clientX-self.offsetX + self.scrollOffsetX;
-	            self.oldY = event.clientY-self.offsetY + self.scrollOffsetY;
+	    	    var pageX = isTouch? changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? changedTouches[0].pageY:event.clientY;
+	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
+	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
 	            console.log(event.type);
 	            self.mpdata.imageData = self.getImageData();
 	    	    self.onDrow(self.mpdata,self.imageId);
@@ -159,6 +164,7 @@ define([
 	    	},
 	    	mouseUp:function(event){
 	    	    var self = event.data.self;
+	    	    var isTouch = event.data.isTouch;
 	    	    self.isMouseDown = false;
 	    	    self.$canvas.css("cursor","crosshair");
 	    	    console.log(event.type);
@@ -168,6 +174,7 @@ define([
 	    	},
 	    	mouseOut:function(event){
 	    	    var self = event.data.self;
+	    	    var isTouch = event.data.isTouch;
 	    	    if(self.isMouseDown !== true){
 	    		return;
 	    	    }
@@ -183,14 +190,17 @@ define([
 	    	},
 	    	draw:function(event){
 	    	    var self = event.data.self;
+	    	    var isTouch = event.data.isTouch;
 		    self.initPointer();
 	    	    if(self.isMouseDown === false){
 	    		return ;
 	    	    }
+	    	    var pageX = isTouch? changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? changedTouches[0].pageY:event.clientY;
 	    	    setTimeout(function(){
 	    			self.initPointer();
-		    	    var x = event.clientX - self.offsetX + self.scrollOffsetX;
-		    	    var y = event.clientY - self.offsetY + self.scrollOffsetY;
+		    	    var x = pageX- self.offsetX + self.scrollOffsetX;
+		    	    var y = pageY - self.offsetY + self.scrollOffsetY;
 		    	    if(self.currentBrush===undefined){
 		    		self.drowCtx.strokeStyle = "rgba(255,0,0,1)";
 				self.drowCtx.lineWidth = 1;
