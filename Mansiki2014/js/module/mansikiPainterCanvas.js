@@ -99,6 +99,14 @@ define([
 		    this.$canvas = $ancer.find("canvas");
 		    this.$canvas.attr("width" ,width);
 		    this.$canvas.attr("height", height);
+		    
+		    
+		    this.$canvas.bind("touchstart",{self:this},this.mouseDown);
+		    this.$canvas.bind("touchend",{self:this},this.mouseUp);
+		    this.$canvas.bind("touchcancel",{self:this},this.mouseOut);
+		    this.$canvas.bind("touchmove",{self:this},this.draw);
+		    
+		    
 		    this.$canvas.bind("mousedown",{self:this},this.mouseDown);
 		    this.$canvas.bind("mouseup",{self:this},this.mouseUp);
 		    this.$canvas.bind("mouseout",{self:this},this.mouseOut);
