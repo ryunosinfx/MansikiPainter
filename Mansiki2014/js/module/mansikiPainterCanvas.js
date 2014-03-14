@@ -198,7 +198,7 @@ define([
 	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	    	    setTimeout(function(){
-	    		alert("pageX:"+pageX+"/pageY:"+pageY);
+	    		//alert("pageX:"+pageX+"/pageY:"+pageY);
 	    			self.initPointer();
 		    	    var x = pageX- self.offsetX + self.scrollOffsetX;
 		    	    var y = pageY - self.offsetY + self.scrollOffsetY;
