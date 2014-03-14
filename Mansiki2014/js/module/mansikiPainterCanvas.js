@@ -141,8 +141,8 @@ define([
 	    	    clearTimeout( self.mouseOutTimer );
 	    	    self.$canvas.css("cursor","crosshair");
 		    self.initPointer();
-	    	    var pageX = isTouch? changedTouches[0].pageX:event.clientX;
-	    	    var pageY = isTouch? changedTouches[0].pageY:event.clientY;
+	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
 	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
 	    	    return false;
@@ -153,8 +153,8 @@ define([
 		    self.initPointer();
 	    	    self.isMouseDown = true;
 	    	    self.$canvas.css("cursor","crosshair");
-	    	    var pageX = isTouch? changedTouches[0].pageX:event.clientX;
-	    	    var pageY = isTouch? changedTouches[0].pageY:event.clientY;
+	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
 	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
 	            console.log(event.type);
@@ -195,9 +195,10 @@ define([
 	    	    if(self.isMouseDown === false){
 	    		return ;
 	    	    }
-	    	    var pageX = isTouch? changedTouches[0].pageX:event.clientX;
-	    	    var pageY = isTouch? changedTouches[0].pageY:event.clientY;
+	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	    	    setTimeout(function(){
+	    		alert("pageX:"+pageX+"/pageY:"+pageY);
 	    			self.initPointer();
 		    	    var x = pageX- self.offsetX + self.scrollOffsetX;
 		    	    var y = pageY - self.offsetY + self.scrollOffsetY;
