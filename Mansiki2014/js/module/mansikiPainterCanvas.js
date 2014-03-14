@@ -145,6 +145,7 @@ define([
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
 	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
+	    		alert("pageX:"+pageX+"/pageY:"+pageY);
 	    	    return false;
 	    	},
 	    	mouseDown:function(event){
@@ -157,6 +158,7 @@ define([
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
 	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
+	    		alert("pageX:"+pageX+"/pageY:"+pageY);
 	            console.log(event.type);
 	            self.mpdata.imageData = self.getImageData();
 	    	    self.onDrow(self.mpdata,self.imageId);
