@@ -14,7 +14,7 @@ define([
 	    this.mpdata.width = width;
 	    this.mpdata.height = height;
 	    this.imageMime = imageMime;
-	    this.onDrow= function(){};
+	    this.onDraw= function(){};
 	    this.rebuildCanvas($ancer,imageId,null);
 	    this.baseColor ="#ffffff";
 	    this.init();
@@ -66,8 +66,8 @@ define([
 			this.imageId=imageId;
 		    }
 		},
-		setOnDrow:function(callback){
-		    this.onDrow = callback;
+		setOnDraw:function(callback){
+		    this.onDraw = callback;
 		},
 		clear:function(){
 		    var self = this;
@@ -125,14 +125,16 @@ define([
 		    self.mpdata.imageData = self.getImageData();
 		    var promise = self.loadToCurrentDirect(self.mpdata);
 		    //self.execOnDrow();
-		    promise.done(function(){self.execOnDrow();});
+		    promise.done(function(){self.execOnDraw();});
 		},
-		execOnDrow:function(){
+		execOnDraw:function(){
 		    var self = this;
+		    clearTimeout(self.onDrawTimer);
+		    self.onDrawTimer =
 		    setTimeout(
 			function(){
 			    self.mpdata.imageData = self.getImageData();
-			    self.onDrow(self.mpdata,self.imageId);
+			    self.onDraw(self.mpdata,self.imageId);
 			}
 			,1000);
 		},
@@ -157,9 +159,8 @@ define([
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
 	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
-	            console.log(event.type);
-	            self.mpdata.imageData = self.getImageData();
-	    	    self.onDrow(self.mpdata,self.imageId);
+	            //console.log(event.type);
+	            self.execOnDraw();
 	            return false;
 	    	},
 	    	mouseUp:function(event){
@@ -167,9 +168,8 @@ define([
 	    	    var isTouch = event.data.isTouch;
 	    	    self.isMouseDown = false;
 	    	    self.$canvas.css("cursor","crosshair");
-	    	    console.log(event.type);
-	            self.mpdata.imageData = self.getImageData();
-	    	    self.onDrow(self.mpdata,self.imageId);
+	    	    //console.log(event.type);
+	            self.execOnDraw();
 	    	    return false;
 	    	},
 	    	mouseOut:function(event){
@@ -182,9 +182,8 @@ define([
     	    	    self.mouseOutTimer = setTimeout(function(){
         	    	    self.isMouseDown = false;
         	    	    self.$canvas.css("cursor","auto");
-        	            console.log(event.type);
-        	            self.mpdata.imageData = self.getImageData();
-        	    	    self.onDrow(self.mpdata,self.imageId);
+        	            //console.log(event.type);
+        	            self.execOnDraw();
 	    	    },1000);
 	            return false;
 	    	},
@@ -225,13 +224,13 @@ define([
 		    	    self.drowCtx.closePath();
 		    	    self.oldX = x;
 		    	    self.oldY = y;
-	    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    	    var current = new Date().getTime();
 		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 64){
 		    		clearTimeout(self.drawTimerDoMix);
 		    	    }
 		    	    self.drawTimerDoMix=setTimeout(
 		    		    function(){
+		    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    		    }
 		    		 ,32);
 		    	    self.lastDrawTime = current;
