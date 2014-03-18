@@ -188,6 +188,14 @@ define([
 	    	    },1000);
 	            return false;
 	    	},
+	    	diray:function(time) {
+	    	    var d1 = new Date().getTime();
+	    	    var d2 = new Date().getTime();
+	    	    while (d2 < d1 + time) {
+        	    		d2 = new Date().getTime();
+        	    	}
+        	    	return;
+        	    },
 	    	draw:function(event){
 	    	    var self = event.data.self;
 	    	    var isTouch = event.data.isTouch;
@@ -197,7 +205,13 @@ define([
 	    	    }
 	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
-	    	    setTimeout(function(){
+	    	    var current = new Date().getTime();
+	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 64){
+	    		return false;
+	    	    }
+	    	    clearTimeout(self.drawTimer);//直前のQueueのやつはぬっ殺す
+	    	    self.lastDrawTime = current;
+	    	    self.drawTimer=setTimeout(function(){
 	    		//alert("pageX:"+pageX+"/pageY:"+pageY);
 	    			self.initPointer();
 		    	    var x = pageX- self.offsetX + self.scrollOffsetX;
