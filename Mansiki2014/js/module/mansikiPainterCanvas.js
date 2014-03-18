@@ -225,15 +225,15 @@ define([
 		    	    self.drowCtx.closePath();
 		    	    self.oldX = x;
 		    	    self.oldY = y;
+	    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    	    var current = new Date().getTime();
-		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
+		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 64){
 		    		clearTimeout(self.drawTimerDoMix);
 		    	    }
 		    	    self.drawTimerDoMix=setTimeout(
 		    		    function(){
-		    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    		    }
-		    		 ,16);
+		    		 ,32);
 		    	    self.lastDrawTime = current;
 	    	    },0);
 	    	    return false;
