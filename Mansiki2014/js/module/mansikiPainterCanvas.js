@@ -209,7 +209,7 @@ define([
 	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 64){
 	    		return false;
 	    	    }
-	    	    clearTimeout(self.drawTimer);//直前のQueueのやつはぬっ殺す
+	    	    //clearTimeout(self.drawTimer);//直前のQueueのやつはぬっ殺す
 	    	    self.lastDrawTime = current;
 	    	    self.drawTimer=setTimeout(function(){
 	    		//alert("pageX:"+pageX+"/pageY:"+pageY);
