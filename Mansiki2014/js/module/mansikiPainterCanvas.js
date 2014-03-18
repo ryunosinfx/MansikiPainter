@@ -205,7 +205,6 @@ define([
 	    	    }
 	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
-	    	    var current = new Date().getTime();
 	    	    self.drawTimer=setTimeout(function(){
 	    		//alert("pageX:"+pageX+"/pageY:"+pageY);
 	    			self.initPointer();
@@ -226,15 +225,15 @@ define([
 		    	    self.drowCtx.closePath();
 		    	    self.oldX = x;
 		    	    self.oldY = y;
-		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 64){
+		    	    var current = new Date().getTime();
+		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
 		    		clearTimeout(self.drawTimerDoMix);
 		    	    }
 		    	    self.drawTimerDoMix=setTimeout(
 		    		    function(){
 		    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    		    }
-		    		 ,32);
-		    	    ////直前のQueueのやつはぬっ殺す
+		    		 ,16);
 		    	    self.lastDrawTime = current;
 	    	    },0);
 	    	    return false;
