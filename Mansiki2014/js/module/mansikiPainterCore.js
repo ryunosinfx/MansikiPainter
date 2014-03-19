@@ -44,7 +44,7 @@ define([
     	psm.setPainterDataManager(this.pdmInst);
     	this.mpcInst = new mpc("myCanvas","layer1",width,height,mpConf.imageMime,this.pdmInst.mpData);
     	psm.setPainterCanvas(this.mpcInst);
-    	this.mpcInst.setOnDrow(this.pdmInst.saveToLS.bind(this.pdmInst));
+    	this.mpcInst.setOnDraw(this.pdmInst.saveToLS.bind(this.pdmInst));
     	mpf.buildSizeSelect($("#canvasSize"),this.mpcInst.resizeCanvas.bind(this.mpcInst));
     	//this.pdmInst.setLoaderImageFunc([this.mpcInst.loadToCurrent.bind(this.mpcInst)]);
     	this.pdmInst.setLoaderDataFunc([

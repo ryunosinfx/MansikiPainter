@@ -140,6 +140,7 @@ define([
 		},
 	    	mouseEnter:function(event){
 	    	    var self = event.data.self;
+	    	    var isTouch = event.data.isTouch;
 	    	    clearTimeout( self.mouseOutTimer );
 	    	    self.$canvas.css("cursor","crosshair");
 		    self.initPointer();
@@ -225,14 +226,14 @@ define([
 		    	    self.oldX = x;
 		    	    self.oldY = y;
 		    	    var current = new Date().getTime();
-		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 64){
+		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
 		    		clearTimeout(self.drawTimerDoMix);
 		    	    }
 		    	    self.drawTimerDoMix=setTimeout(
 		    		    function(){
 		    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    		    }
-		    		 ,32);
+		    		 ,0);
 		    	    self.lastDrawTime = current;
 	    	    },0);
 	    	    return false;
