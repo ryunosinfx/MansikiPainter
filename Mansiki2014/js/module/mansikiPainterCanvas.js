@@ -3,8 +3,50 @@ define([
         ]
 	, function (mansikiCanvasFrame) {
 
+    	var MansikiDataViewManager = function(){
+        	this.ab = new ArrayBuffer(32678); // 256-byte ArrayBuffer.
+        	this.dv = new DataView(this.ab);
+        	this.vector_length = 246;this.dv.getUint8(0);
+        	this.ox = 2;this.dv.getUint16(1); // 0+uint8 = 1 bytes offset
+        	this.oy = 2;this.dv.getUint16(3); // 0+uint8+uint16 = 3 bytes offset
+        	this.nx = 2;this.dv.getUint16(1); // 0+uint8 = 1 bytes offset
+        	this.ny = 2;this.dv.getUint16(3); // 0+uint8+uint16 = 3 bytes offset
+        	this.offset = this.ox*this.oy*this.nx*this.ny;
+        	this.vectors = new Float32Array(this.offset*this.vector_length);
+    	    	alert(this.vectors.length);
+    	    	var offsetOX = this.ox;
+    	    	var offsetOY = this.ox+this.oy;
+    	    	var offsetNX = this.ox+this.oy+this.nx;
+    	    	var offsetNY = this.ox+this.oy+this.nx+this.ny;
+        	for (var i=0, offox=0,offoy=offsetOX,offnx=offsetOY,offny=offsetNX;
+        		i<this.vectors.length;
+        		i++, offox+=offsetOX, offox+=offsetOY, offnx+=offsetNX, offny+=offsetNY
+        	) {
+        	    this.vectors[i] =[
+        	        this.dv.getUint16(offox),
+        	        this.dv.getUint16(offoy),
+        	        this.dv.getUint16(offnx),
+        	        this.dv.getUint16(offny)
+        	    ];
+        	}
+        	this.queueCount = 0;
+    	}
+    	MansikiDataViewManager .prototype={
+    		get:function(index){
+    		    if(this.queueCount < 0){
+    			return undefined;
+    		    }
+    		    this.queueCount--;
+    		},
+    		add:function(ox,oy,nx,ny){
+    		    this.queueCount++;
+    		    var window = this.vectors[this.queueCount] ;
+    		    
+    		}
+    	}
 	var MansikiPainterCanvas = function(id,imageId,width,height,imageMime,mpdata){
 	    this.isMouseDown = false;
+	    this.memoryView = new MansikiDataViewManager();
 	    $ancer = $("#"+id);
 	    this.offsetX = $ancer.position().left*1;
 	    this.offsetY = $ancer.position().top*1;;
@@ -19,6 +61,7 @@ define([
 	    this.baseColor ="#ffffff";
 	    this.init();
 	    this.currentBrush=undefined;
+	    this.memory = new Uint16Array(1024*1024);//0-255
 	};
 	MansikiPainterCanvas.prototype={//baseColor
 		init:function(){
@@ -153,6 +196,7 @@ define([
 	    	mouseDown:function(event){
 	    	    var self = event.data.self;
 	    	    var isTouch = event.data.isTouch;
+		    self.setBrush(event);
 		    self.initPointer();
 	    	    self.isMouseDown = true;
 	    	    self.$canvas.css("cursor","crosshair");
@@ -196,6 +240,18 @@ define([
         	    	}
         	    	return;
         	    },
+        	setBrush:function(event){
+	    	    var self = event.data.self;
+	    	    if(self.currentBrush===undefined){
+	    		self.drowCtx.strokeStyle = "rgba(255,0,0,1)";
+			self.drowCtx.lineWidth = 1;
+	    	    }else{
+	    		//alert(self.currentBrush.color);
+	    		self.drowCtx.strokeStyle = self.currentBrush.color;
+	    		self.drowCtx.lineWidth = self.currentBrush.size*1;
+	    	    }
+        	    
+        	},
 	    	draw:function(event){
 	    	    var self = event.data.self;
 	    	    var isTouch = event.data.isTouch;
@@ -207,17 +263,9 @@ define([
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	    	    self.drawTimer=setTimeout(function(){
 	    		//alert("pageX:"+pageX+"/pageY:"+pageY);
-	    			self.initPointer();
+	    		    self.initPointer();
 		    	    var x = pageX- self.offsetX + self.scrollOffsetX;
 		    	    var y = pageY - self.offsetY + self.scrollOffsetY;
-		    	    if(self.currentBrush===undefined){
-		    		self.drowCtx.strokeStyle = "rgba(255,0,0,1)";
-				self.drowCtx.lineWidth = 1;
-		    	    }else{
-		    		//alert(self.currentBrush.color);
-		    		self.drowCtx.strokeStyle = self.currentBrush.color;
-		    		self.drowCtx.lineWidth = self.currentBrush.size*1;
-		    	    }
 		    	    self.drowCtx.beginPath();
 		    	    self.drowCtx.moveTo(self.oldX, self.oldY);
 		    	    self.drowCtx.lineTo(x, y);
@@ -237,6 +285,39 @@ define([
 		    	    self.lastDrawTime = current;
 	    	    },0);
 	    	    return false;
+	    	},
+	    	drowexec:function(event){
+	    	    var self = event.data.self;
+	    	    //alert("pageX:"+pageX+"/pageY:"+pageY);
+	    	    self.initPointer();
+	    	    var x = pageX- self.offsetX + self.scrollOffsetX;
+	    	    var y = pageY - self.offsetY + self.scrollOffsetY;
+	    	    if(self.currentBrush===undefined){
+	    		self.drowCtx.strokeStyle = "rgba(255,0,0,1)";
+			self.drowCtx.lineWidth = 1;
+	    	    }else{
+	    		//alert(self.currentBrush.color);
+	    		self.drowCtx.strokeStyle = self.currentBrush.color;
+	    		self.drowCtx.lineWidth = self.currentBrush.size*1;
+	    	    }
+	    	    self.drowCtx.beginPath();
+	    	    self.drowCtx.moveTo(self.oldX, self.oldY);
+	    	    self.drowCtx.lineTo(x, y);
+	    	    self.drowCtx.stroke();
+	    	    self.drowCtx.closePath();
+	    	    self.oldX = x;
+	    	    self.oldY = y;
+	    	    var current = new Date().getTime();
+	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
+	    		clearTimeout(self.drawTimerDoMix);
+	    	    }
+	    	    self.drawTimerDoMix=setTimeout(
+	    		    function(){
+	    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
+	    		    }
+	    		 ,0);
+	    	    self.lastDrawTime = current;
+	    	    
 	    	},
 	    	onScroll:function(event){
 	    	    var self = event.data.self;
