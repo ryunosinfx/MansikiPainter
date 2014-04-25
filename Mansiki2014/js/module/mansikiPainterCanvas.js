@@ -5,43 +5,40 @@ define([
 
     	var MansikiDataViewManager = function(){
         	this.ab = new ArrayBuffer(32678); // 256-byte ArrayBuffer.
+        	this.abOffset = new ArrayBuffer(32678); // 256-byte ArrayBuffer.
         	this.dv = new DataView(this.ab);
+        	this.dvOffset = new DataView(this.abOffset);
         	this.vector_length = 246;this.dv.getUint8(0);
-        	this.ox = 2;this.dv.getUint16(1); // 0+uint8 = 1 bytes offset
-        	this.oy = 2;this.dv.getUint16(3); // 0+uint8+uint16 = 3 bytes offset
-        	this.nx = 2;this.dv.getUint16(1); // 0+uint8 = 1 bytes offset
-        	this.ny = 2;this.dv.getUint16(3); // 0+uint8+uint16 = 3 bytes offset
         	this.offset = this.ox*this.oy*this.nx*this.ny;
-        	this.vectors = new Float32Array(this.offset*this.vector_length);
-    	    	alert(this.vectors.length);
-    	    	var offsetOX = this.ox;
-    	    	var offsetOY = this.ox+this.oy;
-    	    	var offsetNX = this.ox+this.oy+this.nx;
-    	    	var offsetNY = this.ox+this.oy+this.nx+this.ny;
-        	for (var i=0, offox=0,offoy=offsetOX,offnx=offsetOY,offny=offsetNX;
-        		i<this.vectors.length;
-        		i++, offox+=offsetOX, offox+=offsetOY, offnx+=offsetNX, offny+=offsetNY
-        	) {
-        	    this.vectors[i] =[
-        	        this.dv.getUint16(offox),
-        	        this.dv.getUint16(offoy),
-        	        this.dv.getUint16(offnx),
-        	        this.dv.getUint16(offny)
-        	    ];
-        	}
+
         	this.queueCount = 0;
     	}
-    	MansikiDataViewManager .prototype={
+    	MansikiDataViewManager.prototype={
     		get:function(index){
     		    if(this.queueCount < 0){
     			return undefined;
     		    }
     		    this.queueCount--;
+        	    var indexA = this.queueCount*8;
+    		    var ox = this.dv.getInt16(indexA+3, true);
+    		    var oy = this.dv.getInt16(indexA+4+3, true);
+    		    var nx = this.dv.getInt16(indexA+8+3, true);
+    		    var ny = this.dv.getInt16(indexA+12+3, true);
+    		    //console.log("["+this.queueCount +"] BB:"+[ox,oy,nx,ny]);
+    		    return {ox:ox, oy:oy, nx:nx, ny:ny};
     		},
     		add:function(ox,oy,nx,ny){
+    		    //console.log("["+this.queueCount+"] AA:"+[ox,oy,nx,ny]);
+        	    var indexA = this.queueCount*8;
+    		    this.dv.setInt16(indexA+3, ox, true);
+    		    this.dv.setInt16(indexA+4+3, oy, true);
+    		    this.dv.setInt16(indexA+8+3, nx, true);
+    		    this.dv.setInt16(indexA+12+3, ny, true);
+    		    //console.log("["+this.queueCount+"] AB:"+[ox,oy,nx,ny]);
     		    this.queueCount++;
-    		    var window = this.vectors[this.queueCount] ;
-    		    
+    		},
+    		size:function(){
+    		    return this.queueCount;
     		}
     	}
 	var MansikiPainterCanvas = function(id,imageId,width,height,imageMime,mpdata){
@@ -59,9 +56,9 @@ define([
 	    this.onDraw= function(){};
 	    this.rebuildCanvas($ancer,imageId,null);
 	    this.baseColor ="#ffffff";
+	    this.animationID ;
 	    this.init();
 	    this.currentBrush=undefined;
-	    this.memory = new Uint16Array(1024*1024);//0-255
 	};
 	MansikiPainterCanvas.prototype={//baseColor
 		init:function(){
@@ -70,6 +67,17 @@ define([
 		    $window.unbind("scroll",this.onScroll);
 		    $window.bind("scroll",{self:this},this.onScroll);
 		    self.initPointer();
+		    self.startAnimation();
+		},
+		startAnimation:function(){
+		    var self = this;
+		    ( function loop(){
+			    self.animationID = requestAnimationFrame( loop );
+			    self.drowexec(self);
+			} )();
+		},
+		stopAnimation:function(){
+		    cancelAnimationFrame(this.animationID);
 		},
 		initPointer:function(){
 		    var self = this;
@@ -147,14 +155,16 @@ define([
 		    this.$canvas.on("touchstart",{self:this,isTouch:true},this.mouseDown);
 		    this.$canvas.on("touchend",{self:this,isTouch:true},this.mouseUp);
 		    this.$canvas.on("touchcancel",{self:this,isTouch:true},this.mouseOut);
-		    this.$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
+		    //this.$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
+		    this.$canvas.get(0).addEventListener( "touchmove", this.draw.bind({data:{self:this,isTouch:true}}), false );
 		    
 		    
 		    this.$canvas.bind("mousedown",{self:this},this.mouseDown);
 		    this.$canvas.bind("mouseup",{self:this},this.mouseUp);
 		    this.$canvas.bind("mouseout",{self:this},this.mouseOut);
 		    this.$canvas.bind("mouseenter",{self:this},this.mouseEnter);
-		    this.$canvas.bind("mousemove",{self:this},this.draw);
+		    //this.$canvas.bind("mousemove",{self:this},this.draw);
+		    this.$canvas.get(0).addEventListener( "mousemove", this.draw.bind({data:{self:this,isTouch:false}}), false );
 		    this.can = this.$canvas.get(0);
 		    this.context = this.can.getContext("2d");
 		    this.drowCan = mansikiCanvasFrame.buildLayer(width,height);
@@ -199,6 +209,7 @@ define([
 		    self.setBrush(event);
 		    self.initPointer();
 	    	    self.isMouseDown = true;
+		    self.startAnimation();
 	    	    self.$canvas.css("cursor","crosshair");
 	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
@@ -212,6 +223,7 @@ define([
 	    	    var self = event.data.self;
 	    	    var isTouch = event.data.isTouch;
 	    	    self.isMouseDown = false;
+	    	    self.stopAnimation();
 	    	    self.$canvas.css("cursor","crosshair");
 	    	    //console.log(event.type);
 	            self.execOnDraw();
@@ -226,6 +238,7 @@ define([
 	    	    clearTimeout( self.mouseOutTimer );
     	    	    self.mouseOutTimer = setTimeout(function(){
         	    	    self.isMouseDown = false;
+        	    	    self.stopAnimation();
         	    	    self.$canvas.css("cursor","auto");
         	            //console.log(event.type);
         	            self.execOnDraw();
@@ -253,24 +266,26 @@ define([
         	    
         	},
 	    	draw:function(event){
-	    	    var self = event.data.self;
-	    	    var isTouch = event.data.isTouch;
+	    	    var self = this.data.self;
+	    	    var isTouch = this.data.isTouch;
 		    self.initPointer();
 	    	    if(self.isMouseDown === false){
 	    		return ;
 	    	    }
-	    	    var pageX = isTouch? event.originalEvent.changedTouches[0].pageX:event.clientX;
-	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
-	    	    self.drawTimer=setTimeout(function(){
+	    	    var pageX = isTouch? event.changedTouches[0].pageX:event.clientX;
+	    	    var pageY = isTouch? event.changedTouches[0].pageY:event.clientY;
 	    		//alert("pageX:"+pageX+"/pageY:"+pageY);
 	    		    self.initPointer();
-		    	    var x = pageX- self.offsetX + self.scrollOffsetX;
+		    	    var x = pageX - self.offsetX + self.scrollOffsetX;
 		    	    var y = pageY - self.offsetY + self.scrollOffsetY;
-		    	    self.drowCtx.beginPath();
-		    	    self.drowCtx.moveTo(self.oldX, self.oldY);
-		    	    self.drowCtx.lineTo(x, y);
-		    	    self.drowCtx.stroke();
-		    	    self.drowCtx.closePath();
+		    	    self.memoryView.add(self.oldXLast, self.oldYLast, x, y);
+//		    	    self.drowCtx.beginPath();
+//		    	    self.drowCtx.moveTo(self.oldX, self.oldY);
+//		    	    self.drowCtx.lineTo(x, y);
+//		    	    self.drowCtx.stroke();
+//		    	    self.drowCtx.closePath();
+		    	    self.oldXLast = self.oldX;
+		    	    self.oldYLast = self.oldY;
 		    	    self.oldX = x;
 		    	    self.oldY = y;
 		    	    var current = new Date().getTime();
@@ -283,41 +298,51 @@ define([
 		    		    }
 		    		 ,0);
 		    	    self.lastDrawTime = current;
-	    	    },0);
 	    	    return false;
 	    	},
-	    	drowexec:function(event){
-	    	    var self = event.data.self;
-	    	    //alert("pageX:"+pageX+"/pageY:"+pageY);
+	    	drowexec:function(self){
 	    	    self.initPointer();
-	    	    var x = pageX- self.offsetX + self.scrollOffsetX;
-	    	    var y = pageY - self.offsetY + self.scrollOffsetY;
-	    	    if(self.currentBrush===undefined){
-	    		self.drowCtx.strokeStyle = "rgba(255,0,0,1)";
-			self.drowCtx.lineWidth = 1;
-	    	    }else{
-	    		//alert(self.currentBrush.color);
-	    		self.drowCtx.strokeStyle = self.currentBrush.color;
-	    		self.drowCtx.lineWidth = self.currentBrush.size*1;
+	    	    var size = self.memoryView.size();
+	    	    if(size < 1){
+	    		return ;
 	    	    }
 	    	    self.drowCtx.beginPath();
-	    	    self.drowCtx.moveTo(self.oldX, self.oldY);
-	    	    self.drowCtx.lineTo(x, y);
+	    	    var oldX =self.oldXLast;
+	    	    var oldY =self.oldYLast;
+	    	    for(var index = 0;index < size; index ++){
+	    		var vector = self.memoryView.get(index);
+	    		//{ox:ox, oy:oy, nx:nx, ny:ny};
+		    	self.drowCtx.moveTo(oldX, oldY);
+		    	self.drowCtx.lineTo(vector.nx, vector.ny);
+		    	console.log(vector);
+		    	oldX= vector.nx;
+		    	oldY= vector.ny;
+	    	    }
 	    	    self.drowCtx.stroke();
 	    	    self.drowCtx.closePath();
-	    	    self.oldX = x;
-	    	    self.oldY = y;
+	    	    //------------------------------------------------------------
 	    	    var current = new Date().getTime();
 	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
 	    		clearTimeout(self.drawTimerDoMix);
 	    	    }
+	    	    clearTimeout(self.drawTimerDoMix);
 	    	    self.drawTimerDoMix=setTimeout(
 	    		    function(){
-	    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
+	    			//mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 	    		    }
-	    		 ,0);
+	    		 ,1000);
 	    	    self.lastDrawTime = current;
 	    	    
+	    	},
+	    	asBezier:function(p1x,p2x,p3x,p4x,p1y,p2y,p3y,p4y){
+	    	  for(var i = 0;i <= 100;i++){
+	    	    var t = i/100;		
+	    	    var omt = (1-t);
+	    	    //x,yそれぞれの座標を計算する
+	    	    var bX = omt * omt * omt * p1x + 3 * omt * omt * t * p2x + 3 * omt * t * t * p3x + t * t * t * p4x;
+	    	    var bY = omt * omt * omt * p1y + 3 * omt * omt * t * p2y + 3 * omt * t * t * p3y + t * t * t * p4y;
+	    	    //ellipse(bX,bY,3,3);			//直径３の円を描画
+	    	  }
 	    	},
 	    	onScroll:function(event){
 	    	    var self = event.data.self;
