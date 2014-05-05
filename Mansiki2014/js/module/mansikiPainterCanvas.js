@@ -66,6 +66,7 @@ define([
 		    var $window = $(window);
 		    $window.unbind("scroll",this.onScroll);
 		    $window.bind("scroll",{self:this},this.onScroll);
+		    self.$window = $window;
 		    self.initPointer();
 		    self.startAnimation();
 		},
@@ -81,7 +82,7 @@ define([
 		},
 		initPointer:function(){
 		    var self = this;
-		    var $window = $(window);
+		    var $window = self.$window===undefined ?$(window):self.$window;
 		    self.scrollOffsetY = $window.scrollTop();
 		    self.scrollOffsetX = $window.scrollLeft();
 		},
@@ -147,25 +148,26 @@ define([
 		    this.imageId = imageId;
 		    $ancer.find("canvas").remove();
 		    $ancer.append("<canvas/>");
-		    this.$canvas = $ancer.find("canvas");
-		    this.$canvas.attr("width" ,width);
-		    this.$canvas.attr("height", height);
+		    var $canvas = $ancer.find("canvas");
+		    this.$canvas = $canvas;
+		    $canvas.attr("width" ,width);
+		    $canvas.attr("height", height);
 		    
 		    
-		    this.$canvas.on("touchstart",{self:this,isTouch:true},this.mouseDown);
-		    this.$canvas.on("touchend",{self:this,isTouch:true},this.mouseUp);
-		    this.$canvas.on("touchcancel",{self:this,isTouch:true},this.mouseOut);
-		    //this.$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
-		    this.$canvas.get(0).addEventListener( "touchmove", this.draw.bind({data:{self:this,isTouch:true}}), false );
+		    $canvas.on("touchstart",{self:this,isTouch:true},this.mouseDown);
+		    $canvas.on("touchend",{self:this,isTouch:true},this.mouseUp);
+		    $canvas.on("touchcancel",{self:this,isTouch:true},this.mouseOut);
+		    //$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
+		    $canvas.get(0).addEventListener( "touchmove", this.draw.bind({data:{self:this,isTouch:true}}), false );
 		    
 		    
-		    this.$canvas.bind("mousedown",{self:this},this.mouseDown);
-		    this.$canvas.bind("mouseup",{self:this},this.mouseUp);
-		    this.$canvas.bind("mouseout",{self:this},this.mouseOut);
-		    this.$canvas.bind("mouseenter",{self:this},this.mouseEnter);
-		    //this.$canvas.bind("mousemove",{self:this},this.draw);
-		    this.$canvas.get(0).addEventListener( "mousemove", this.draw.bind({data:{self:this,isTouch:false}}), false );
-		    this.can = this.$canvas.get(0);
+		    $canvas.on("mousedown",{self:this},this.mouseDown);
+		    $canvas.on("mouseup",{self:this},this.mouseUp);
+		    $canvas.on("mouseout",{self:this},this.mouseOut);
+		    $canvas.on("mouseenter",{self:this},this.mouseEnter);
+		    //$canvas.bind("mousemove",{self:this},this.draw);
+		    $canvas.get(0).addEventListener( "mousemove", this.draw.bind({data:{self:this,isTouch:false}}), false );
+		    this.can = $canvas.get(0);
 		    this.context = this.can.getContext("2d");
 		    this.drowCan = mansikiCanvasFrame.buildLayer(width,height);
 		    this.drowCtx = this.drowCan.getContext("2d");
@@ -279,25 +281,17 @@ define([
 		    	    var x = pageX - self.offsetX + self.scrollOffsetX;
 		    	    var y = pageY - self.offsetY + self.scrollOffsetY;
 		    	    self.memoryView.add(self.oldXLast, self.oldYLast, x, y);
-//		    	    self.drowCtx.beginPath();
-//		    	    self.drowCtx.moveTo(self.oldX, self.oldY);
-//		    	    self.drowCtx.lineTo(x, y);
-//		    	    self.drowCtx.stroke();
-//		    	    self.drowCtx.closePath();
 		    	    self.oldXLast = self.oldX;
 		    	    self.oldYLast = self.oldY;
 		    	    self.oldX = x;
 		    	    self.oldY = y;
-		    	    var current = new Date().getTime();
-		    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
 		    		clearTimeout(self.drawTimerDoMix);
-		    	    }
 		    	    self.drawTimerDoMix=setTimeout(
 		    		    function(){
 		    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 		    		    }
 		    		 ,0);
-		    	    self.lastDrawTime = current;
+		    	    //self.lastDrawTime = current;
 	    	    return false;
 	    	},
 	    	drowexec:function(self){
@@ -306,32 +300,33 @@ define([
 	    	    if(size < 1){
 	    		return ;
 	    	    }
-	    	    self.drowCtx.beginPath();
+	    	    var context = self.drowCtx;
+	    	    context.beginPath();
 	    	    var oldX =self.oldXLast;
 	    	    var oldY =self.oldYLast;
 	    	    for(var index = 0;index < size; index ++){
 	    		var vector = self.memoryView.get(index);
 	    		//{ox:ox, oy:oy, nx:nx, ny:ny};
-		    	self.drowCtx.moveTo(oldX, oldY);
-		    	self.drowCtx.lineTo(vector.nx, vector.ny);
-		    	console.log(vector);
-		    	oldX= vector.nx;
-		    	oldY= vector.ny;
+		    	context.moveTo(oldX, oldY);
+		    	context.lineTo(vector.nx, vector.ny);
+		    	//console.log(vector);
+		    	oldX = vector.nx;
+		    	oldY = vector.ny;
 	    	    }
-	    	    self.drowCtx.stroke();
-	    	    self.drowCtx.closePath();
+	    	    context.stroke();
+	    	    context.closePath();
 	    	    //------------------------------------------------------------
-	    	    var current = new Date().getTime();
-	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
-	    		clearTimeout(self.drawTimerDoMix);
-	    	    }
-	    	    clearTimeout(self.drawTimerDoMix);
-	    	    self.drawTimerDoMix=setTimeout(
-	    		    function(){
-	    			//mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
-	    		    }
-	    		 ,1000);
-	    	    self.lastDrawTime = current;
+//	    	    var current = new Date().getTime();
+//	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
+//	    		clearTimeout(self.drawTimerDoMix);
+//	    	    }
+//	    	    clearTimeout(self.drawTimerDoMix);
+//	    	    self.drawTimerDoMix=setTimeout(
+//	    		    function(){
+//	    			//mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
+//	    		    }
+//	    		 ,100);
+//	    	    self.lastDrawTime = current;
 	    	    
 	    	},
 	    	asBezier:function(p1x,p2x,p3x,p4x,p1y,p2y,p3y,p4y){
