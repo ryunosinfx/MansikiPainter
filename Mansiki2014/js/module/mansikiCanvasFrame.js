@@ -15,8 +15,8 @@ define([
 var mansikiCanvasFrame = function(){
 }
 mansikiCanvasFrame.prototype={
-	buildBackground:function(width,height){
-	    this.$canvas = $("<canvas width='"+width+"' height='"+height+"'>");
+	buildBackground:function($canvas,width,height){
+	    this.$canvas = $canvas;
 	    var canvas = this.$canvas.get(0);
 	    var context = canvas.getContext('2d');
 	    context.fillStyle = "#ffffff";
@@ -40,7 +40,7 @@ mansikiCanvasFrame.prototype={
 	    context.strokeRect(iRect.sx+iRect.ex,iRect.sy+iRect.ey/2-yOffset,iRect.sx,1);
 	    var aRect = this.calcRect(width,outerWa,outerHa,outerWa,outerHa);
 	    context.strokeRect(aRect.sx,aRect.sy-yOffset,aRect.ex,aRect.ey);
-	    return canvas;
+	    return this.$canvas;
 	},
 	calcRect:function(width,ow,oh,iw,ih){
 	    var height = width*oh/ow;
@@ -52,26 +52,41 @@ mansikiCanvasFrame.prototype={
 	    var ey = iheight*1;
 	    return {sx:sx,sy:sy,ex:ex,ey:ey};
 	},
-	buildLayer:function(width,height){
-	    var $canvas = $("<canvas>");
+	buildLayer:function($base,width,height){
+	    var $canvas = $("<canvas class='mansiki-layer' />");
 	    var canvas = $canvas.get(0);
 	    if (canvas.getContext) {
 		$canvas.attr("width" ,width);
 		$canvas.attr("height", height);
-		var context = canvas.getContext('2d');
+		var context = canvas.getContext("2d");
+		context.fillStyle ="rgba(255,255,255,0)";
+		context.fillRect(0,0,width,height);
+		context.clearRect(0,0,width,height);
 	    }
-	    return canvas;
+	    $base.append($canvas);
+	    return $canvas;
+	},
+	clearLayer:function($canvas){
+	    var canvas = $canvas.get(0);
+	    if (canvas.getContext) {
+		var width = $canvas.attr("width" );
+		var height = $canvas.attr("height");
+		var context = canvas.getContext("2d");
+		context.fillStyle ="rgba(255,255,255,0)";
+		context.fillRect(0,0,width,height);
+		context.clearRect(0,0,width,height);
+	    }
 	},
 	doMix:function(baseCtx,layerCans,width,height){
 
 	    //alert(width);
-	    baseCtx.fillRect(0,0,width,height);
-	    var bkCan = this.buildBackground(width,height);
-	    baseCtx.drawImage(bkCan, 0, 0, width, height);
-	    for(var index in layerCans){
-		var layerCan = layerCans[index];
-		baseCtx.drawImage(layerCan, 0, 0, width, height);
-	    }
+//	    baseCtx.fillRect(0,0,width,height);
+//	    var bkCan = this.buildBackground(width,height);
+//	    baseCtx.drawImage(bkCan, 0, 0, width, height);
+//	    for(var index in layerCans){
+//		var layerCan = layerCans[index];
+//		baseCtx.drawImage(layerCan, 0, 0, width, height);
+//	    }
 	}
 }
 

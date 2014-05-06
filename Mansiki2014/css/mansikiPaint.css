@@ -37,3 +37,14 @@ div.active{
 	color:#7197d1;
 	font-weight:bold;
 }
+canvas.mansiki-backgound,canvas.mansiki-layer{
+	z-index:50;
+	position :absolute;
+	top:50px;
+	left:0;
+}
+canvas.mansiki-layer{
+	z-index:100;
+	position :absolute;
+
+	}

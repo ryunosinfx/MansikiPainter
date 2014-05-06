@@ -55,6 +55,7 @@ define([
 	    this.imageMime = imageMime;
 	    this.onDraw= function(){};
 	    this.rebuildCanvas($ancer,imageId,null);
+	    this.$ancer = $ancer;
 	    this.baseColor ="#ffffff";
 	    this.animationID ;
 	    this.init();
@@ -92,22 +93,16 @@ define([
 		loadToCurrentDirect:function(mpdata,imageId){
 		    var d= new $.Deferred();
 		    var self = this;
-		    if(mpdata===undefined){
-			mpdata=self.mpdata;
-		    }
 		    var img = new Image();
-		    self.mpdata = mpdata;
-		    self.$canvas.attr("width" ,self.mpdata.width);
-		    self.$canvas.attr("height", self.mpdata.height);
-		    self.can = self.$canvas.get(0);
-		    self.context = self.can.getContext("2d");
-		    self.drowCan = mansikiCanvasFrame.buildLayer(self.mpdata.width,self.mpdata.height);
-		    self.drowCtx = this.drowCan.getContext("2d");
+		    self.drowCan.attr("width" ,self.mpdata.width);
+		    self.drowCan.attr("height", self.mpdata.height);
 		    img.src = self.mpdata.imageData;
 		    img.onload=function(event){
-			self.context.fillStyle = self.baseColor;
+			self.$canvas.attr("width" ,self.mpdata.width);
+			self.$canvas.attr("height", self.mpdata.height);
+			mansikiCanvasFrame.buildBackground(self.$canvas,self.mpdata.width, self.mpdata.height);
+			self.drowCtx.fillStyle = self.baseColor;
 			self.loadToCurrent(img,imageId);
-		    	mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
 			d.resolve();
 		    }
 		    return d;
@@ -123,15 +118,11 @@ define([
 		},
 		clear:function(){
 		    var self = this;
-		    self.context.fillStyle = self.baseColor;
-		    self.context.fillRect(0,0,self.mpdata.width,self.mpdata.height);
-		    self.drowCan = mansikiCanvasFrame.buildLayer(self.mpdata.width,self.mpdata.height);
-		    self.drowCtx = self.drowCan.getContext("2d");
-		    mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
+		    mansikiCanvasFrame.clearLayer(self.drowCan);
 		},
 		getImageData:function(){
 		    var self = this;
-		    var imgData = self.drowCan.toDataURL(self.imageMime ); 
+		    var imgData = self.drowCan.get(0).toDataURL(self.imageMime ); 
 		    return imgData;
 		},
 		newCanvas:function(id,imageId,width,height){
@@ -147,30 +138,32 @@ define([
 		    }
 		    this.imageId = imageId;
 		    $ancer.find("canvas").remove();
-		    $ancer.append("<canvas/>");
-		    var $canvas = $ancer.find("canvas");
-		    this.$canvas = $canvas;
+		    var $canvas = $("<canvas class='mansiki-background'/>");
 		    $canvas.attr("width" ,width);
 		    $canvas.attr("height", height);
+		    mansikiCanvasFrame.buildBackground($canvas ,width, height);
+		    this.$canvas = $canvas;
+		    $ancer.append($canvas);
 		    
-		    
-		    $canvas.on("touchstart",{self:this,isTouch:true},this.mouseDown);
-		    $canvas.on("touchend",{self:this,isTouch:true},this.mouseUp);
-		    $canvas.on("touchcancel",{self:this,isTouch:true},this.mouseOut);
-		    //$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
-		    $canvas.get(0).addEventListener( "touchmove", this.draw.bind({data:{self:this,isTouch:true}}), false );
-		    
-		    
-		    $canvas.on("mousedown",{self:this},this.mouseDown);
-		    $canvas.on("mouseup",{self:this},this.mouseUp);
-		    $canvas.on("mouseout",{self:this},this.mouseOut);
-		    $canvas.on("mouseenter",{self:this},this.mouseEnter);
-		    //$canvas.bind("mousemove",{self:this},this.draw);
-		    $canvas.get(0).addEventListener( "mousemove", this.draw.bind({data:{self:this,isTouch:false}}), false );
 		    this.can = $canvas.get(0);
 		    this.context = this.can.getContext("2d");
-		    this.drowCan = mansikiCanvasFrame.buildLayer(width,height);
-		    this.drowCtx = this.drowCan.getContext("2d");
+		    this.drowCan = mansikiCanvasFrame.buildLayer($ancer,width,height);
+		    this.drowCtx = this.drowCan.get(0).getContext("2d");
+		    
+		    this.drowCan.on("touchstart",{self:this,isTouch:true},this.mouseDown);
+		    this.drowCan.on("touchend",{self:this,isTouch:true},this.mouseUp);
+		    this.drowCan.on("touchcancel",{self:this,isTouch:true},this.mouseOut);
+		    //$canvas.on("touchmove",{self:this,isTouch:true},this.draw);
+		    this.drowCan.get(0).addEventListener( "touchmove", this.draw.bind({data:{self:this,isTouch:true}}), false );
+		    
+		    
+		    this.drowCan.on("mousedown",{self:this},this.mouseDown);
+		    this.drowCan.on("mouseup",{self:this},this.mouseUp);
+		    this.drowCan.on("mouseout",{self:this},this.mouseOut);
+		    this.drowCan.on("mouseenter",{self:this},this.mouseEnter);
+		    //$canvas.bind("mousemove",{self:this},this.draw);
+		    this.drowCan.get(0).addEventListener( "mousemove", this.draw.bind({data:{self:this,isTouch:false}}), false );
+		    
 		    //this.context.globalAlpha = 0.4;
 		    this.initPointer();
 		},
@@ -217,7 +210,7 @@ define([
 	    	    var pageY = isTouch? event.originalEvent.changedTouches[0].pageY:event.clientY;
 	            self.oldX = pageX-self.offsetX + self.scrollOffsetX;
 	            self.oldY = pageY-self.offsetY + self.scrollOffsetY;
-	            //console.log(event.type);
+	            console.log(event.type);
 	            self.execOnDraw();
 	            return false;
 	    	},
@@ -285,13 +278,6 @@ define([
 		    	    self.oldYLast = self.oldY;
 		    	    self.oldX = x;
 		    	    self.oldY = y;
-		    		clearTimeout(self.drawTimerDoMix);
-		    	    self.drawTimerDoMix=setTimeout(
-		    		    function(){
-		    			mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
-		    		    }
-		    		 ,0);
-		    	    //self.lastDrawTime = current;
 	    	    return false;
 	    	},
 	    	drowexec:function(self){
@@ -315,18 +301,6 @@ define([
 	    	    }
 	    	    context.stroke();
 	    	    context.closePath();
-	    	    //------------------------------------------------------------
-//	    	    var current = new Date().getTime();
-//	    	    if(self.lastDrawTime !== undefined && current - self.lastDrawTime < 32){
-//	    		clearTimeout(self.drawTimerDoMix);
-//	    	    }
-//	    	    clearTimeout(self.drawTimerDoMix);
-//	    	    self.drawTimerDoMix=setTimeout(
-//	    		    function(){
-//	    			//mansikiCanvasFrame.doMix( self.context ,[self.drowCan],self.mpdata.width,self.mpdata.height);
-//	    		    }
-//	    		 ,100);
-//	    	    self.lastDrawTime = current;
 	    	    
 	    	},
 	    	asBezier:function(p1x,p2x,p3x,p4x,p1y,p2y,p3y,p4y){

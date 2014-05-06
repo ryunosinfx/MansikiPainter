@@ -32,13 +32,13 @@ require.config({
       
   paths: {
     'mansikiPainter':        'js/module/mansikiPainterCore',
-    'jquery':        'js/libs/jquery-2.0.2.min',
+    'jquery':        'js/libs/jquery-2.1.1',
     'bootstrap':     'js/libs/bootstrap.min',
     'underscore':    'js/libs/underscore-min',
     'knockout':      'js/libs/knockout-2.3.0',
     'md5':      'js/libs/md5.min',
     'minicolors':      'js/libs/jquery.minicolors.min',
-    'indexeddb':      'js/libs/jquery.indexeddb.min',
+    'indexeddb':      'js/libs/jquery.indexeddb',
     'indexdbWrapper':      'js/libs/indexdbWrapper'
   },
   urlArgs: 'u=' +  (new Date()).getTime()

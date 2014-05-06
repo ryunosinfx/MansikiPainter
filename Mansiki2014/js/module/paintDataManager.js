@@ -12,9 +12,9 @@ define([
 	    	this.defaultImageKey = defaultImageKey===undefined?"layerName":defaultImageKey;
 	    	//----------------------------------------------------------------
 	    	this.idbw = new $.indexedDBwrapper(this.dbName);
-	    	this.dbName = dbName+"A6";
-	    	this.TableNames = ["test"];
-	    	this.TableName = "test";
+	    	this.dbName = dbName+"A7";
+	    	this.TableName = "paintData";
+	    	this.TableNames = [this.TableName];
 	    	this.TableNameForAny = "anyData";
 	    	this.pk = "imgId";
 	    	this.pkAny = "dataId";
