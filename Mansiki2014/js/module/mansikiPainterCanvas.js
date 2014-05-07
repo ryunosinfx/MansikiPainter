@@ -93,6 +93,7 @@ define([
 		loadToCurrentDirect:function(mpdata,imageId){
 		    var d= new $.Deferred();
 		    var self = this;
+		    self.mpdata = mpdata;
 		    var img = new Image();
 		    self.drowCan.attr("width" ,self.mpdata.width);
 		    self.drowCan.attr("height", self.mpdata.height);

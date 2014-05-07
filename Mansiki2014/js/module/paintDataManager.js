@@ -68,6 +68,7 @@ define([
 	    	    self.saveTimerForAny = setTimeout(function(){
 	        	self.idbw.insertUpdate(self.TableNameForAny,data ,pk);
 	    	    },200);
+	    	    //console.log("saveAnyData pk:"+pk);
 	    	},
 		//汎用
 	    	loadAnyData:function(pk,callback){
@@ -78,6 +79,7 @@ define([
 	    	    var loadFuncFail = function(){
 	    		//alert("nothing!");
 	    	    };
+	    	    //console.log("loadAnyData pk:"+pk);
 	    	    this.idbw.select(self.TableNameForAny ,pk ,loadFunc,loadFuncFail).then(loadFuncFail,loadFuncFail);
 	    	},
 	    	saveToLS:function(mpData,imageKey){
