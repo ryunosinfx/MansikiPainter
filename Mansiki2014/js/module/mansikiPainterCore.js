@@ -9,9 +9,12 @@ define([
         'js/module/mansikiPainterForms',
         'js/module/paintDataManager',
         'js/module/paintStateManager',
+        'js/Util/FullScreenUtil',
+        'js/Util/ScreenOrientationLockUtil',
+        
         'js/config/mansikiPainterConfig',
         'js/config/mansikiPainterInitData',
-        ], function ($, _, ko,mc,idb,idbw,mpc,mpf,pdm,psm,mpConf,mpInitData
+        ], function ($, _, ko,mc,idb,idbw,mpc,mpf,pdm,psm,fsUtil,solUtil,mpConf,mpInitData
     ) {
     $.event.props.push('dataTransfer');//ドラッグアンドドロップのおまじない
     //DONE 画面サイズプルダウン
@@ -83,6 +86,8 @@ define([
 	});
     	//alert("aaaa"+$('#colorSetting').val());
     	this.$fileForm.bind("drop",{self:this},this.load);
+    	$('div.painterTitle').bind("click",{self:fsUtil},fsUtil.toggle);
+    	solUtil.lockToPortrait();
     }
     //定数宣言
     Object.defineProperty(PainterCore, "a", { value : 37,writable : false });
