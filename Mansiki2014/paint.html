@@ -113,6 +113,14 @@
 						      </div>
 						    </form>
 				  		</li>
+	          	<li class="divider"></li>
+				      <li >&nbsp;&nbsp;&nbsp;
+				      	<div  class="btn-group btn-group-xs menu-buttons">
+									<button type="button" class="btn btn-default" id="zoomUpAncer">&nbsp; + &nbsp;</button>
+									<button type="button" class="btn btn-default" id="zoomClearAncer">&nbsp; 1 &nbsp;</button>
+									<button type="button" class="btn btn-default" id="zoomDownAncer">&nbsp; - &nbsp;</button>
+					      </div>
+				  		</li>
 
 	        </ul>
 	      </li>
@@ -154,7 +162,9 @@
 	</nav>
 		<article>
 			<div style="border:solid gray 1px" class="mansikiImageField" id="dropImage"  ondragover="onDragOver(event)" ondrop="onDragOver(event)" >
-				<div id="myCanvas" class="mansikiCanvas"></div>
+				<div id="myCanvasWrapper" class="">
+					<div id="myCanvas" class="mansikiCanvas"></div>
+				</div>
 			</div>
 		</article>
 		<footer>

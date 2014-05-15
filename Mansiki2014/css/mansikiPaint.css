@@ -40,7 +40,7 @@ div.active{
 canvas.mansiki-backgound,canvas.mansiki-layer{
 	z-index:50;
 	position :absolute;
-	top:50px;
+	top:0px;
 	left:0;
 }
 canvas.mansiki-layer{

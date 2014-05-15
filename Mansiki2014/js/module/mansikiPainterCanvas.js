@@ -1,7 +1,8 @@
 define([
         'js/module/mansikiCanvasFrame',
+        'js/Util/ZoomUtil',
         ]
-	, function (mansikiCanvasFrame) {
+	, function (mansikiCanvasFrame,zoomUtil) {
 
     	var MansikiDataViewManager = function(){
         	this.ab = new ArrayBuffer(32678); // 256-byte ArrayBuffer.
@@ -58,6 +59,7 @@ define([
 	    this.$ancer = $ancer;
 	    this.baseColor ="#ffffff";
 	    this.animationID ;
+	    this.$myCanvas = $("#myCanvas");
 	    this.init();
 	    this.currentBrush=undefined;
 	};
@@ -70,6 +72,11 @@ define([
 		    self.$window = $window;
 		    self.initPointer();
 		    self.startAnimation();
+		    
+		    self.zoomUtil = zoomUtil;
+		    $("#zoomUpAncer").on("click",{self:zoomUtil,$target:self.$myCanvas},zoomUtil.up);
+		    $("#zoomClearAncer").on("click",{self:zoomUtil,$target:self.$myCanvas},zoomUtil.clear);
+		    $("#zoomDownAncer").on("click",{self:zoomUtil,$target:self.$myCanvas},zoomUtil.down);
 		},
 		startAnimation:function(){
 		    var self = this;
@@ -287,6 +294,8 @@ define([
 	    	    if(size < 1){
 	    		return ;
 	    	    }
+	    	    var scale = self.zoomUtil.getScale();
+	    	    console.log("scale:"+scale);
 	    	    var context = self.drowCtx;
 	    	    context.beginPath();
 	    	    var oldX =self.oldXLast;
@@ -294,8 +303,8 @@ define([
 	    	    for(var index = 0;index < size; index ++){
 	    		var vector = self.memoryView.get(index);
 	    		//{ox:ox, oy:oy, nx:nx, ny:ny};
-		    	context.moveTo(oldX, oldY);
-		    	context.lineTo(vector.nx, vector.ny);
+		    	context.moveTo(oldX/scale, oldY/scale);
+		    	context.lineTo(vector.nx/scale, vector.ny/scale);
 		    	//console.log(vector);
 		    	oldX = vector.nx;
 		    	oldY = vector.ny;
