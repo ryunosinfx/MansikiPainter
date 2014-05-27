@@ -56,9 +56,12 @@ define([
     	     ]);
     	var psmPromise = psm.load();
     	var changeFunc = function(hex, opacity) {
-        		console.log(hex + ' - ' + opacity);
-        		psm.changeColor(hex,opacity);
-        	}
+	    	if (opacity === undefined){
+	    	    opacity = 1.0;
+	    	}
+		console.log(hex + ' - ' + opacity);
+		psm.changeColor(hex,opacity);
+    	}
     	var settings= {
     		animationSpeed: 50,
     		animationEasing: 'swing',

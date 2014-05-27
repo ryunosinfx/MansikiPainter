@@ -37,10 +37,15 @@ define([
 		    var current = this.getCurrentBrush();
 		    //alert("hex:"+hex);
 		    current.color=hex;
-		    this.mpc.currentBrush=current;
+		    current.opacity=opacity;
+		    this.mpc.setCurrentBrush(current);
 		    this.save();
 		},
 		getCurrentBrush:function(){
+		    var current = this.brushes[this.currentBrush];
+		    if(current===undefined){
+			this.brushes[this.currentBrush]={color:"#0000ff",opacity:1};
+		    }
 		    return this.brushes[this.currentBrush];
 		},
 		save:function(){
@@ -53,6 +58,7 @@ define([
 		    var d1= new $.Deferred();
 		    var d2= new $.Deferred();
                     var callback = function(data){
+                	//alert("1data:"+data);
                         if(data!==undefined ){
                             self.brushes = data;
                         }
@@ -63,13 +69,13 @@ define([
                         if(data!==undefined ){
                             self.currentBrush = data;
                         }
+                	//alert("2data:"+data);
                         d2.resolve();
                     }
                     self.pdm.loadAnyData(self.brushKey,callback2);
                     $.when(d1, d2).done(
                 	function(){
-                	    //alert("zzz:"+self.getCurrentBrush()+"/"+self.currentBrush);
-                	    self.mpc.currentBrush = self.getCurrentBrush();
+                	    self.mpc.setCurrentBrush(self.getCurrentBrush());
             		    d.resolve();
                 	}
                     );

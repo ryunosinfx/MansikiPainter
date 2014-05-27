@@ -258,6 +258,7 @@ define([
         	    },
         	setBrush:function(event){
 	    	    var self = event.data.self;
+	    	    console.log("self.currentBrush:"+self.currentBrush);
 	    	    if(self.currentBrush===undefined){
 	    		self.drowCtx.strokeStyle = "rgba(255,0,0,1)";
 			self.drowCtx.lineWidth = 1;
@@ -266,7 +267,10 @@ define([
 	    		self.drowCtx.strokeStyle = self.currentBrush.color;
 	    		self.drowCtx.lineWidth = self.currentBrush.size*1;
 	    	    }
-        	    
+        	},
+        	setCurrentBrush:function(brush){
+        	    var self = this;
+        	    self.currentBrush = brush ;
         	},
 	    	draw:function(event){
 	    	    var self = this.data.self;
@@ -295,7 +299,7 @@ define([
 	    		return ;
 	    	    }
 	    	    var scale = self.zoomUtil.getScale();
-	    	    console.log("scale:"+scale);
+	    	    //console.log("scale:"+scale);
 	    	    var context = self.drowCtx;
 	    	    context.beginPath();
 	    	    var oldX =self.oldXLast;

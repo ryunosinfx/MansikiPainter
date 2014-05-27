@@ -77,7 +77,7 @@ define([
 	    		callback(data);
 	    	    };
 	    	    var loadFuncFail = function(){
-	    		//alert("nothing!");
+	    		//alert("nothing! pk:"+pk);
 	    	    };
 	    	    //console.log("loadAnyData pk:"+pk);
 	    	    this.idbw.select(self.TableNameForAny ,pk ,loadFunc,loadFuncFail).then(loadFuncFail,loadFuncFail);

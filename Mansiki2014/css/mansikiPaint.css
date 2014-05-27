@@ -48,3 +48,7 @@ canvas.mansiki-layer{
 	position :absolute;
 
 	}
+#myCanvas{
+	transform:scale(1,1);
+}
+}
