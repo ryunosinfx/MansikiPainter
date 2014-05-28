@@ -51,4 +51,7 @@ canvas.mansiki-layer{
 #myCanvas{
 	transform:scale(1,1);
 }
+
+.dropdown-menu .menu-buttons{
+	margin-left:0px;
 }

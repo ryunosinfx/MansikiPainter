@@ -5,20 +5,24 @@ define([
         'js/entity/mansikiPaintData',
         'js/entity/mansikiPaintBrushData',
         'js/config/mansikiPainterInitData',
+        'js/entity/mansikiToolSelectionState',
         ], function (idb,idbw
         	,mansikiTitleData
         	,mansikiPaintData
         	,mansikiPaintBrushData
         	,mansikiPainterInitData
+        	,mansikiToolSelectionState
         ) {
     	//欲しいのは作品に依存しない現在の情報
 	var PaintStateManager = function(){
 	    this.brushsKey = "brushsKey";
 	    this.brushKey = "brushKey";
+	    this.stateKey = "stateKey";
 	    this.pdm=function(){};
 	    this.mpc=function(){};
 	    this.brushes = mansikiPainterInitData.brushes;//初期状態
-	    this.currentBrush = "Pen1";//デフォルトキー
+	    this.ToolSelectionState = new mansikiToolSelectionState();
+	    this.ToolSelectionState.brush = "Pen1";//デフォルトキー
 	};
 	PaintStateManager.prototype={
 		setPainterDataManager:function(pdm){
@@ -29,7 +33,7 @@ define([
 		    this.mpc.currentBrush=this.getCurrentBrush();
 		},
 		change:function(brushKey){
-		    this.currentBrush = brushKey;
+		    this.ToolSelectionState.brush = brushKey;
 		    this.mpc.currentBrush=this.getCurrentBrush();
 		    this.save();
 		},
@@ -38,19 +42,32 @@ define([
 		    //alert("hex:"+hex);
 		    current.color=hex;
 		    current.opacity=opacity;
+		    this.ToolSelectionState.color=hex;
+		    this.ToolSelectionState.opacity=opacity;
 		    this.mpc.setCurrentBrush(current);
 		    this.save();
 		},
+		changeColor2nd:function(hex){
+		    var current = this.getCurrentBrush();
+		    this.ToolSelectionState.color2nd=hex;
+		    this.save();
+		},
+		changeColor2nd:function(hex){
+		    var current = this.getCurrentBrush();
+		    this.ToolSelectionState.color2nd=hex;
+		    this.save();
+		},
 		getCurrentBrush:function(){
-		    var current = this.brushes[this.currentBrush];
+		    var current = this.brushes[this.ToolSelectionState.brush];
 		    if(current===undefined){
-			this.brushes[this.currentBrush]={color:"#0000ff",opacity:1};
+			this.brushes[this.ToolSelectionState.brush]=new mansikiPaintBrushData();
 		    }
-		    return this.brushes[this.currentBrush];
+		    this.brushes[this.ToolSelectionState.brush];
+		    return this.brushes[this.ToolSelectionState.brush];
 		},
 		save:function(){
 		    this.pdm.saveAnyData(this.brushes,this.brushsKey);
-		    this.pdm.saveAnyData(this.currentBrush,this.brushKey);
+		    this.pdm.saveAnyData(this.ToolSelectionState,this.stateKey);
 		},
                 load:function(){
                     var self = this;
@@ -67,12 +84,14 @@ define([
                     this.pdm.loadAnyData(this.brushsKey,callback);
                     var callback2 = function(data){
                         if(data!==undefined ){
-                            self.currentBrush = data;
+                            
+                            self.ToolSelectionState = new mansikiToolSelectionState();
+                            self.ToolSelectionState.setData(data);
                         }
                 	//alert("2data:"+data);
                         d2.resolve();
                     }
-                    self.pdm.loadAnyData(self.brushKey,callback2);
+                    self.pdm.loadAnyData(self.stateKey,callback2);
                     $.when(d1, d2).done(
                 	function(){
                 	    self.mpc.setCurrentBrush(self.getCurrentBrush());
